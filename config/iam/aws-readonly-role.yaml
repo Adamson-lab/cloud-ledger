@@ -1,0 +1,23 @@
+# Deploy in every account (for example as a CloudFormation StackSet).
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Read-only role that cloud-ledger assumes through Steampipe.
+Parameters:
+  TrustedPrincipalArn:
+    Type: String
+    Description: The one IAM role or user that may assume this role.
+Resources:
+  LedgerReadOnly:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: cloud-ledger-readonly
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: {AWS: !Ref TrustedPrincipalArn}
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/SecurityAudit
+Outputs:
+  RoleArn:
+    Value: !GetAtt LedgerReadOnly.Arn

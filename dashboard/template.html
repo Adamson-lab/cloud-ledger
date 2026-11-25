@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud Ledger</title>
+<style>
+/* Layout: summary line, estate map (the diagram doubles as the filter), findings, drift, tags */
+:root{--bg:#f4f6f8;--panel:#fff;--fg:#14202b;--mute:#566573;--line:#d5dde4;--accent:#0b6e99;
+--critical:#b42318;--high:#a85208;--medium:#7a6400;--low:#4d6475;--tint:#fdecea;
+--sans:"IBM Plex Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f161c;--panel:#18222b;--fg:#e6edf2;--mute:#9babb8;--line:#2c3a46;--accent:#5cc0e8;--critical:#ff8a7e;--high:#f6a85c;--medium:#e2c95a;--low:#a3bccd;--tint:#3a201f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f161c;--panel:#18222b;--fg:#e6edf2;--mute:#9babb8;--line:#2c3a46;--accent:#5cc0e8;--critical:#ff8a7e;--high:#f6a85c;--medium:#e2c95a;--low:#a3bccd;--tint:#3a201f;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans)}
+main{max-width:1100px;margin:auto;padding-block:24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{margin:0;font-size:1.7rem}h2{font-size:1.1rem;margin:32px 0 10px}.mute{color:var(--mute)}
+.banner{border:1px solid var(--line);padding:8px 12px;margin-top:12px;background:var(--panel)}.banner.bad{border-color:var(--critical);background:var(--tint)}
+.stats{display:flex;flex-wrap:wrap;gap:10px 32px;margin-top:18px}.stats b{display:block;font:600 1.6rem var(--mono)}.stats span{color:var(--mute);font-size:.85rem}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.cloud{border-top:3px solid var(--accent);padding-top:6px;min-width:0}.cloud>strong{font:600 .95rem var(--mono)}
+.tree{border-left:2px solid var(--line);margin-left:8px;padding-left:14px;display:grid;gap:8px;margin-top:6px}
+button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.acct{position:relative;text-align:left;padding:8px 10px;width:100%;overflow-wrap:anywhere}
+.acct:before{content:"";position:absolute;left:-17px;top:18px;width:15px;border-top:2px solid var(--line)}
+.acct.bad{border-color:var(--critical);background:var(--tint)}.acct[aria-pressed="true"],.chip[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
+.acct small{display:block;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.chip{padding:4px 12px}
+details{background:var(--panel);border:1px solid var(--line);margin-bottom:6px}summary{cursor:pointer;padding:8px 12px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.sev{font:600 .75rem var(--mono);width:68px}.critical{color:var(--critical)}.high{color:var(--high)}.medium{color:var(--medium)}.low{color:var(--low)}
+code{font-family:var(--mono);font-size:.86em;overflow-wrap:anywhere}.body{padding:0 12px 10px 92px}
+.bar{height:8px;background:var(--line)}.bar i{display:block;height:100%;background:var(--accent)}.cov{max-width:520px;display:grid;gap:10px}
+.scroll{overflow-x:auto}table{border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{border-bottom:1px solid var(--line);padding:6px 18px 6px 0;text-align:right}th:first-child,td:first-child{text-align:left}
+@media(max-width:560px){.body{padding-left:12px}}
+</style>
+<main>
+<h1>Cloud Ledger</h1><div class="mute" id="when"></div><div id="banners"></div><div class="stats" id="stats"></div>
+<h2>Estate map</h2><p class="mute">Red marks an account with a critical finding. Select an account to filter the findings.</p><div class="map" id="map"></div>
+<h2>Findings</h2><div class="chips" id="chips"></div><div id="list"></div>
+<div id="drift"></div>
+<h2>Tag coverage</h2><p class="mute">Share of taggable resources that carry each tag.</p><div class="cov" id="cov"></div>
+<h2>Resources by cloud</h2><div class="scroll" id="matrix"></div>
+</main>
+<script>
+const D=/*__DATA__*/null;
+const $=id=>document.getElementById(id);
+// Every value comes from cloud APIs, so text is only ever added as text nodes.
+function el(tag,attrs={},...kids){const n=document.createElement(tag);for(const[k,v]of Object.entries(attrs))k.startsWith('on')?n[k]=v:n.setAttribute(k,v);n.append(...kids);return n}
+let account=null,severity=null;
+$('when').textContent='Snapshot taken '+D.taken_at;
+if(D.demo)$('banners').append(el('div',{class:'banner'},'Fictional sample data for "Meridian Example Bank". No real cloud account was queried.'));
+if(D.errors.length)$('banners').append(el('div',{class:'banner bad'},'Incomplete snapshot. Totals are too low. Failed: '+D.errors.map(e=>e.query).join(', ')));
+for(const[v,l]of[[D.inventory.length,'resources'],[D.severity.critical,'critical findings'],[D.severity.high,'high findings'],[D.currency+' '+D.monthly_waste.toFixed(2),'idle disk and IP per month, placeholder rates']])
+ $('stats').append(el('div',{},el('b',{},String(v)),el('span',{},l)));
+function drawMap(){$('map').replaceChildren(...D.clouds.map(c=>{
+ const rs=D.inventory.filter(r=>r.cloud===c);
+ return el('div',{class:'cloud'},el('strong',{},c.toUpperCase()+' · '+rs.length+' resources'),el('div',{class:'tree'},...[...new Set(rs.map(r=>r.account))].sort().map(a=>{
+  const mine=rs.filter(r=>r.account===a),crit=D.findings.filter(f=>f.cloud===c&&f.account===a&&f.severity==='critical').length;
+  const mix=Object.entries(mine.reduce((m,r)=>(m[r.category]=(m[r.category]||0)+1,m),{})).map(([k,n])=>n+' '+k.replace('_',' ')).join(', ');
+  const key=c+'|'+a;
+  return el('button',{class:'acct'+(crit?' bad':''),'aria-pressed':String(account===key),onclick:()=>{account=account===key?null:key;drawMap();drawList()}},el('code',{},a),el('small',{},mix),el('small',{class:crit?'critical':''},crit?crit+' critical':'no critical findings'))})))}))}
+function drawList(){
+ $('chips').replaceChildren(...[null,'critical','high','medium','low'].map(s=>el('button',{class:'chip','aria-pressed':String(severity===s),onclick:()=>{severity=s;drawList()}},s?s+' ('+D.severity[s]+')':'all ('+D.findings.length+')')));
+ const rows=D.findings.filter(f=>(!severity||f.severity===severity)&&(!account||account===f.cloud+'|'+f.account));
+ $('list').replaceChildren(...(rows.length?rows.map(f=>el('details',{},el('summary',{},el('span',{class:'sev '+f.severity},f.severity),el('span',{},f.title),el('code',{},f.cloud+' / '+f.resource_id)),
+  el('div',{class:'body'},el('div',{},f.control+': '+f.detail),el('div',{},'Fix: '+f.fix),el('div',{class:'mute'},'Account '+f.account+', region '+f.region)))):[el('p',{},'No findings match this filter. Clear it to see all findings.')]))}
+if(D.changes){const items=[['new_findings','New finding'],['gone_findings','No longer reported'],['new_resources','New resource'],['gone_resources','Removed resource']].flatMap(([k,l])=>D.changes[k].map(r=>el('li',{},l+': ',el('code',{},[r.control||r.category,r.cloud,r.resource_id].join(' / ')))));
+ $('drift').append(el('h2',{},'Changes since the previous snapshot'),el('p',{class:'mute'},'Compared: '+D.changes.compared.join(', ')+(D.changes.skipped.length?'. Not compared: '+D.changes.skipped.join(', '):'')),el('ul',{},...items))}
+for(const[k,c]of Object.entries(D.coverage)){const p=c.total?Math.round(100*c.tagged/c.total):0;const i=el('i');i.style.width=p+'%';$('cov').append(el('div',{},k.replace('_',' ')+': '+p+'% ('+c.tagged+' of '+c.total+')',el('div',{class:'bar'},i)))}
+const cats=[...new Set(D.inventory.map(r=>r.category))].sort();
+$('matrix').append(el('table',{},el('tr',{},el('th',{},'Category'),...D.clouds.map(c=>el('th',{},c.toUpperCase()))),...cats.map(k=>el('tr',{},el('td',{},k.replace('_',' ')),...D.clouds.map(c=>el('td',{},String(D.matrix[c][k]||0)))))));
+drawMap();drawList();
+</script>

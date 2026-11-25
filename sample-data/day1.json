@@ -1,0 +1,84 @@
+{
+ "aws_ec2_instance": [
+  {"account_id": "111111111111", "region": "eu-west-1", "instance_id": "i-demo-pay01", "title": "payments-api-1", "instance_type": "m6i.large", "instance_state": "running", "tags": {"Owner": "payments", "CostCenter": "CC-100", "Environment": "prod"}},
+  {"account_id": "111111111111", "region": "eu-west-1", "instance_id": "i-demo-pay02", "title": "payments-api-2", "instance_type": "m6i.large", "instance_state": "running", "tags": {"Owner": "payments", "CostCenter": "CC-100", "Environment": "prod"}},
+  {"account_id": "222222222222", "region": "eu-west-1", "instance_id": "i-demo-lab01", "title": "lab-box", "instance_type": "t3.micro", "instance_state": "stopped", "tags": null}
+ ],
+ "aws_ebs_volume": [
+  {"account_id": "111111111111", "region": "eu-west-1", "volume_id": "vol-demo-used", "size": 100, "state": "in-use", "encrypted": true, "tags": {"Owner": "payments", "CostCenter": "CC-100", "Environment": "prod"}},
+  {"account_id": "222222222222", "region": "eu-west-1", "volume_id": "vol-demo-orphan", "size": 500, "state": "available", "encrypted": false, "tags": {}}
+ ],
+ "aws_s3_bucket": [
+  {"account_id": "111111111111", "region": "eu-west-1", "name": "meridian-demo-statements", "bucket_policy_is_public": false, "restrict_public_buckets": true, "tags": {"Owner": "retail", "CostCenter": "CC-200", "Environment": "prod"}},
+  {"account_id": "222222222222", "region": "eu-west-1", "name": "meridian-demo-marketing-drop", "bucket_policy_is_public": true, "restrict_public_buckets": false, "tags": {"owner": "marketing"}},
+  {"account_id": "111111111111", "region": "eu-west-1", "name": "meridian-demo-guarded", "bucket_policy_is_public": true, "restrict_public_buckets": true, "tags": {"Owner": "web", "CostCenter": "CC-300", "Environment": "prod"}}
+ ],
+ "aws_rds_db_instance": [
+  {"account_id": "111111111111", "region": "eu-west-1", "db_instance_identifier": "core-ledger", "class": "db.r6g.xlarge", "status": "available", "publicly_accessible": false, "tags": {"Owner": "core-banking", "CostCenter": "CC-110", "Environment": "prod"}},
+  {"account_id": "222222222222", "region": "eu-west-1", "db_instance_identifier": "reporting-poc", "class": "db.t4g.medium", "status": "available", "publicly_accessible": true, "tags": {"env": "dev"}}
+ ],
+ "aws_vpc_security_group_rule": [
+  {"account_id": "111111111111", "region": "eu-west-1", "group_id": "sg-demo-web", "security_group_rule_id": "sgr-1", "is_egress": false, "ip_protocol": "tcp", "from_port": 443, "to_port": 443, "cidr_ipv4": "0.0.0.0/0"},
+  {"account_id": "111111111111", "region": "eu-west-1", "group_id": "sg-demo-jump", "security_group_rule_id": "sgr-2", "is_egress": false, "ip_protocol": "tcp", "from_port": 22, "to_port": 22, "cidr_ipv4": "0.0.0.0/0"},
+  {"account_id": "111111111111", "region": "eu-west-1", "group_id": "sg-demo-internal", "security_group_rule_id": "sgr-3", "is_egress": false, "ip_protocol": "tcp", "from_port": 22, "to_port": 22, "cidr_ipv4": "10.0.0.0/8"},
+  {"account_id": "111111111111", "region": "eu-west-1", "group_id": "sg-demo-egress", "security_group_rule_id": "sgr-4", "is_egress": true, "ip_protocol": "tcp", "from_port": 22, "to_port": 22, "cidr_ipv4": "0.0.0.0/0"},
+  {"account_id": "111111111111", "region": "eu-west-1", "group_id": "sg-demo-v6", "security_group_rule_id": "sgr-5", "is_egress": false, "ip_protocol": "tcp", "from_port": 3300, "to_port": 3400, "cidr_ipv6": "::/0"}
+ ],
+ "aws_vpc_eip": [
+  {"account_id": "111111111111", "region": "eu-west-1", "allocation_id": "eipalloc-demo-used", "public_ip": "192.0.2.10", "association_id": "eipassoc-demo", "tags": {"Owner": "payments", "CostCenter": "CC-100", "Environment": "prod"}},
+  {"account_id": "222222222222", "region": "eu-west-1", "allocation_id": "eipalloc-demo-idle", "public_ip": "192.0.2.11", "tags": null}
+ ],
+ "azure_compute_virtual_machine": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "vm_id": "vm-demo-0001", "name": "treasury-app-01", "size": "Standard_D4s_v5", "power_state": "running", "tags": {"Owner": "treasury", "CostCenter": "CC-400", "Environment": "prod"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "vm_id": "vm-demo-0002", "name": "treasury-batch-01", "size": "Standard_D8s_v5", "power_state": "stopped", "tags": {"Owner": "treasury"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "vm_id": "vm-demo-0003", "name": "treasury-dr-01", "size": "Standard_D4s_v5", "power_state": "deallocated", "tags": {"Owner": "treasury", "CostCenter": "CC-400", "Environment": "dr"}}
+ ],
+ "azure_compute_disk": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "disk-treasury-os", "disk_size_gb": 128, "disk_state": "Attached", "tags": {"Owner": "treasury", "CostCenter": "CC-400", "Environment": "prod"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "disk-old-migration", "disk_size_gb": 1024, "disk_state": "Unattached", "tags": {}}
+ ],
+ "azure_storage_account": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "meridiandemotreasury", "sku_name": "Standard_GRS", "allow_blob_public_access": false, "tags": {"Owner": "treasury", "CostCenter": "CC-400", "Environment": "prod"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "meridiandemolegacy", "sku_name": "Standard_LRS", "allow_blob_public_access": true, "tags": null}
+ ],
+ "azure_sql_server": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "sql-demo-fx", "public_network_access": "Enabled", "firewall_rules": [{"name": "temp-any", "properties": {"startIpAddress": "0.0.0.0", "endIpAddress": "255.255.255.255"}}], "tags": {"owner": "fx-desk"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "sql-demo-gl", "public_network_access": "Disabled", "firewall_rules": [], "tags": {"Owner": "finance", "CostCenter": "CC-500", "Environment": "prod"}}
+ ],
+ "azure_network_security_group": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "nsg-demo-rdp", "tags": {}, "security_rules": [{"name": "allow-rdp", "properties": {"access": "Allow", "direction": "Inbound", "protocol": "Tcp", "sourceAddressPrefix": "*", "priority": 100, "destinationPortRanges": ["3389", "8080"]}}]},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "nsg-demo-range", "tags": {}, "security_rules": [{"name": "wide", "properties": {"access": "Allow", "direction": "Inbound", "protocol": "Tcp", "sourceAddressPrefix": "Internet", "priority": 100, "destinationPortRange": "20-25"}}]},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "nsg-demo-safe", "tags": {}, "security_rules": [{"name": "https", "properties": {"access": "Allow", "direction": "Inbound", "protocol": "Tcp", "sourceAddressPrefix": "*", "priority": 100, "destinationPortRange": "443"}}, {"name": "deny-ssh", "properties": {"access": "Deny", "direction": "Inbound", "protocol": "Tcp", "sourceAddressPrefix": "*", "priority": 100, "destinationPortRange": "22"}}, {"name": "vnet-ssh", "properties": {"access": "Allow", "direction": "Inbound", "protocol": "Tcp", "sourceAddressPrefix": "VirtualNetwork", "priority": 100, "destinationPortRange": "22"}}, {"name": "out", "properties": {"access": "Allow", "direction": "Outbound", "protocol": "Tcp", "sourceAddressPrefix": "*", "priority": 100, "destinationPortRange": "22"}}]}
+ ],
+ "azure_public_ip": [
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "pip-demo-gw", "ip_address": "198.51.100.5", "ip_configuration_id": "/demo/ipconfig", "tags": {"Owner": "treasury", "CostCenter": "CC-400", "Environment": "prod"}},
+  {"subscription_id": "00000000-demo-0000-0000-000000000001", "region": "westeurope", "resource_group": "rg-treasury", "name": "pip-demo-spare", "ip_address": "198.51.100.6", "tags": null}
+ ],
+ "gcp_compute_instance": [
+  {"project": "meridian-demo-analytics", "location": "europe-west1-b", "id": 9001, "name": "analytics-worker-1", "machine_type_name": "n2-standard-4", "status": "RUNNING", "labels": {"owner": "data", "cost-center": "cc-600", "env": "prod"}},
+  {"project": "meridian-demo-analytics", "location": "europe-west1-b", "id": 9002, "name": "analytics-scratch", "machine_type_name": "e2-medium", "status": "TERMINATED", "labels": null}
+ ],
+ "gcp_compute_disk": [
+  {"project": "meridian-demo-analytics", "location": "europe-west1-b", "name": "worker-boot", "size_gb": 50, "status": "READY", "users": ["projects/demo/instances/analytics-worker-1"], "labels": {"owner": "data", "cost-center": "cc-600", "env": "prod"}},
+  {"project": "meridian-demo-analytics", "location": "europe-west1-b", "name": "etl-temp", "size_gb": 200, "status": "READY", "labels": {"env": "dev"}}
+ ],
+ "gcp_storage_bucket": [
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "meridian-demo-warehouse", "iam_configuration_public_access_prevention": "enforced", "iam_policy": {"bindings": [{"role": "roles/storage.admin", "members": ["group:data@example.com"]}]}, "labels": {"owner": "data", "cost-center": "cc-600", "env": "prod"}},
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "meridian-demo-share", "iam_configuration_public_access_prevention": "inherited", "iam_policy": {"bindings": [{"role": "roles/storage.objectViewer", "members": ["allUsers"]}]}, "labels": {}}
+ ],
+ "gcp_sql_database_instance": [
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "risk-models", "machine_type": "db-custom-4-16384", "state": "RUNNABLE", "ip_configuration": {"ipv4Enabled": true, "authorizedNetworks": [{"name": "office", "value": "203.0.113.0/24"}]}, "labels": {"owner": "risk", "cost-center": "cc-700", "env": "prod"}},
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "risk-private", "machine_type": "db-custom-2-8192", "state": "RUNNABLE", "ip_configuration": {"ipv4Enabled": false}, "labels": {"owner": "risk", "cost-center": "cc-700", "env": "prod"}}
+ ],
+ "gcp_compute_firewall": [
+  {"project": "meridian-demo-analytics", "location": "global", "name": "allow-https", "direction": "INGRESS", "disabled": false, "source_ranges": ["0.0.0.0/0"], "allowed": [{"IPProtocol": "tcp", "ports": ["443"]}]},
+  {"project": "meridian-demo-analytics", "location": "global", "name": "allow-all-temp", "direction": "INGRESS", "disabled": false, "source_ranges": ["0.0.0.0/0"], "allowed": [{"IPProtocol": "all"}]},
+  {"project": "meridian-demo-analytics", "location": "global", "name": "old-ssh-disabled", "direction": "INGRESS", "disabled": true, "source_ranges": ["0.0.0.0/0"], "allowed": [{"IPProtocol": "tcp", "ports": ["22"]}]},
+  {"project": "meridian-demo-analytics", "location": "global", "name": "iap-ssh", "direction": "INGRESS", "disabled": false, "source_ranges": ["35.235.240.0/20"], "allowed": [{"IPProtocol": "tcp", "ports": ["22"]}]}
+ ],
+ "gcp_compute_address": [
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "nat-ip", "address": "203.0.113.20", "address_type": "EXTERNAL", "status": "IN_USE"},
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "forgotten-ip", "address": "203.0.113.21", "address_type": "EXTERNAL", "status": "RESERVED"},
+  {"project": "meridian-demo-analytics", "location": "europe-west1", "name": "internal-ip", "address": "10.1.1.5", "address_type": "INTERNAL", "status": "RESERVED"}
+ ]
+}

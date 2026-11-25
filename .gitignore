@@ -1,0 +1,6 @@
+snapshots/
+out/
+__pycache__/
+*.pyc
+.env
+# Real credentials and real inventory must never be committed.

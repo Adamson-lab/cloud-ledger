@@ -1,0 +1,11 @@
+{
+ "NET-01": {"severity": "critical", "title": "Admin or database port open to the internet", "fix": "Limit the source to VPN or bastion ranges, or use SSM, Azure Bastion or IAP."},
+ "STO-01": {"severity": "critical", "title": "Storage bucket grants public access", "fix": "Remove the public grant and turn on Block Public Access or Public Access Prevention."},
+ "DB-02":  {"severity": "critical", "title": "Database firewall open to the whole internet", "fix": "Delete the any-address rule. Use private networking."},
+ "DB-01":  {"severity": "high", "title": "Database has a public network path", "fix": "Confirm the business need. Otherwise move to a private endpoint."},
+ "STO-02": {"severity": "medium", "title": "Storage account permits anonymous blob access", "fix": "Set allow blob public access to false."},
+ "ENC-01": {"severity": "high", "title": "Disk not encrypted", "fix": "Create an encrypted copy, swap it in and enable encryption by default."},
+ "COST-01": {"severity": "low", "title": "Unattached disk", "fix": "Snapshot if needed, get owner approval, then delete."},
+ "COST-02": {"severity": "low", "title": "Idle public IP", "fix": "Confirm nothing depends on the address, then release it."},
+ "COST-03": {"severity": "low", "title": "Stopped VM still billed", "fix": "Deallocate the VM."}
+}
