@@ -2,7 +2,7 @@
 
 Goal: `DB-03`, an RDS instance with automated backups turned off.
 
-**1. Add sample data.** In `sample-data/day1.json`, add `"backup_retention_period": 0,` to the `reporting-poc` database row.
+**1. Add sample data.** In both `sample-data/day1.json` and `sample-data/day2.json`, add `"backup_retention_period": 0,` to the `reporting-poc` database row. If you change only day 1, the drift test fails because the issue appears to be fixed on day 2.
 
 **2. Prove the query alone.**
 
